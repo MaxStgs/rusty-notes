@@ -1,0 +1,15 @@
+# Стадия сборки
+FROM rust:1.67 as build
+
+WORKDIR /usr/src/notes_api
+COPY . .
+
+RUN cargo build --release
+
+# Стадия Production
+FROM debian:buster-slim
+
+COPY --from=build /usr/src/notes_api/target/release/notes_api /usr/local/bin/notes_api
+EXPOSE 8080
+
+CMD ["notes_api"]
